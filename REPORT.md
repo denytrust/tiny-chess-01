@@ -4,12 +4,13 @@
 0x88 board; alpha-beta + iterative deepening, PVS, null-move, quiescence
 (delta pruning), Zobrist TT, MVV-LVA + killers + history, material + PST
 eval. Fixed 200k-node budget/move (main + quiescence), no clock, no
-randomness. `main.py` is an LZMA+base85 payload of the golfed source;
-stdlib only, no file/network/model access.
+randomness. `main.py` is the kit's makefun-compress/v1 packing (LZMA stub)
+of the golfed source (`source.py`, 7,655 bytes, kept beside the entry);
+stdlib only; talks to the harness over HTTP, no file or model access.
 
 ## Size
-- main.py: 4,090 / 4,096 bytes
-- repo total: 8,175 / 8,192 bytes
+- main.py: 3,333 / 4,096 bytes
+- repo total: 7,522 / 8,192 bytes
 
 ## Tests
 - perft: startpos d3 8,902; Kiwipete d3 97,862 — pass.
