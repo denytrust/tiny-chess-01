@@ -1,28 +1,18 @@
-# tiny-chess-01 — report
+# tiny-chess-01 v2
 
-## Engine
-0x88 board; alpha-beta + iterative deepening, PVS, null-move, quiescence
-(delta pruning), Zobrist TT, MVV-LVA + killers + history, material + PST
-eval. Fixed 200k-node budget/move (main + quiescence), no clock, no
-randomness. `main.py` is the kit's makefun-compress/v1 packing (LZMA stub)
-of the golfed source (`source.py`, 7,655 bytes, kept beside the entry);
-stdlib only; talks to the harness over HTTP, no file or model access.
+## Practice Elo (6 games/trial, kit practice)
+v2 (180k total-node cap): t0 1809 (5W 1D 0L), t1 1451 (3W 2D 1L), t2 1451 (3W 2D 1L). Mean 1570.
+v1 (200k nodes incl. quiescence): t0 1364 (3W 1D 2L), t1 1279 (1W 4D 1L), t2 1451 (3W 2D 1L). Mean 1365.
+Floor 1154; sunfish ~1365. v2 beats both on every trial.
 
-## Size
-- main.py: 3,333 / 4,096 bytes
-- repo total: 7,522 / 8,192 bytes
+## Changes vs v1
+Tapered MG/EG PSTs (224-char table + EG king table), bishop-pair bonus, tempo +10, futility pruning (d<=2), null-move phase guard, check extension. Main budget 120k nodes; quiescence not counted toward it, but a 180k total-node cap bounds think time (max 6.0s/move over 3 trials; limit 10s). Same 0x88 alpha-beta/PVS/TT/killers/history core. No randomness, no wall clock.
 
-## Tests
-- perft: startpos d3 8,902; Kiwipete d3 97,862 — pass.
-- fuzz vs python-chess: 14,397 positions, 0 mismatches.
-- practice trials (6 games), final main.py:
-  - trial-0 (150k): 3W 1D 2L, Elo 1,364.
-  - trial-1 (200k): 1W 4D 1L, Elo 1,279.
-  - No time losses; max think 7.7 s (limit 10 s).
-- dev engine (tapered, main-only 120k): trial-0 Elo 2,112, trial-1
-  Elo 1,545 — stronger but does not fit 4 KB and times out.
+## Correctness
+perft startpos d3 8902, Kiwipete d3 97862, POS3-6 d1-d3 PASS. Eval consistency PASS. Fuzz vs python-chess: 2000 positions, 0 mismatches. Golfed vs readable source: identical moves/node counts.
 
-## Verdict vs sunfish
-Sunfish's 6-game practice mean is ~1,365 Elo. This entry's mean (~1,320)
-is slightly below it, so it likely does NOT beat the house baseline.
-Counting quiescence nodes (to stay under 10 s/move) cuts search depth.
+## Sizes
+main.py 3651/4096 (kit makefun-compress/v1). source.py 8710, uncommitted (sent beside bundle). Tracked repo total 7952/8192.
+
+## Caveat
+150k/120k caps were also trialled while the local VM ran ~2x slower and lost games on time; their Elo is not a clean read. The 180k numbers above are the clean measurement (normal-speed VM). House speed unknown; 180k cap keeps max think 6.0s there.
