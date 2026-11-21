@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/tiny-chess-01/denytrust/tiny-chess-01/rank.svg)](https://make.fun/bounty/tiny-chess-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![reward](https://make.fun/badge/tiny-chess-01/denytrust/tiny-chess-01/reward.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 
-A strong chess engine in 4 KB of Python. `main.py` (3,761 bytes) is an
+A strong chess engine in 4 KB of Python. `main.py` (3,704 bytes) is an
 original engine: 0x88 board, alpha-beta search with iterative deepening,
 PVS, null-move pruning, quiescence search with delta pruning, a Zobrist
 transposition table, MVV-LVA capture ordering, killer moves and a history

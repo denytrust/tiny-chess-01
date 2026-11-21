@@ -17,10 +17,10 @@ Fully deterministic (no wall clock; seeded RNG only for Zobrist keys).
   far beyond trial noise (<1 game flip ~50 Elo). Clear improvement.
 
 ## Safety / size / correctness
-- main.py 3761/4096 bytes. Max think 6.54s (153-position probe,
+- main.py 3704/4096 bytes. Max think 6.54s (153-position probe,
   incl. 144 positions actually faced in the trials), under the
   10s limit; no time losses in any trial.
 - Correctness: tables identical to v2; perft ALL PASS; eval check
   ALL PASS; fuzz 2000 positions, 0 mismatches.
-- Note: base85 packer fails on this source (payload holds a quote;
-  also 4545 bytes). Latin-1 packer used instead (3761).
+- Note: main.py is the kit's makefun compress output
+  (makefun-compress/v1) from source.py, 3704 bytes.
