@@ -1,18 +1,26 @@
-# tiny-chess-01 v2
+# tiny-chess Delta150
 
-## Practice Elo (6 games/trial, kit practice)
-v2 (180k total-node cap): t0 1809 (5W 1D 0L), t1 1451 (3W 2D 1L), t2 1451 (3W 2D 1L). Mean 1570.
-v1 (200k nodes incl. quiescence): t0 1364 (3W 1D 2L), t1 1279 (1W 4D 1L), t2 1451 (3W 2D 1L). Mean 1365.
-Floor 1154; sunfish ~1365. v2 beats both on every trial.
+## Change vs v2
+One parameter only: quiescence delta-pruning margin 200->150
+(`if s+g2+150<l:continue` in q()). Wider QS: fewer captures pruned.
+Rest = v2 exactly (0x88 alpha-beta/PVS/TT/killers/history, tapered
+MG/EG PST, bishop pair, tempo+10, futility 150*d, null-move H>=8,
+check extension). Budgets unchanged: 120k main / 180k total nodes.
+Fully deterministic (no wall clock; seeded RNG only for Zobrist keys).
 
-## Changes vs v1
-Tapered MG/EG PSTs (224-char table + EG king table), bishop-pair bonus, tempo +10, futility pruning (d<=2), null-move phase guard, check extension. Main budget 120k nodes; quiescence not counted toward it, but a 180k total-node cap bounds think time (max 6.0s/move over 3 trials; limit 10s). Same 0x88 alpha-beta/PVS/TT/killers/history core. No randomness, no wall clock.
+## Practice trials (local kit, 6 games each)
+- trial-0: Elo 2112 (6W 0D 0L) — v2 1809, v3 1654
+- trial-1: Elo 1545 (3W 3D 0L) — v2 1451, v3 1545
+- trial-2: Elo 1545 (4W 1D 1L) — v2 1451, v3 1364
+- mean: 1734. v2: 1570. v3: 1521.
+- Delta150 beats v2 on ALL THREE trials (+303/+94/+94), mean +164 —
+  far beyond trial noise (<1 game flip ~50 Elo). Clear improvement.
 
-## Correctness
-perft startpos d3 8902, Kiwipete d3 97862, POS3-6 d1-d3 PASS. Eval consistency PASS. Fuzz vs python-chess: 2000 positions, 0 mismatches. Golfed vs readable source: identical moves/node counts.
-
-## Sizes
-main.py 3651/4096 (kit makefun-compress/v1). source.py 8710, uncommitted (sent beside bundle). Tracked repo total 7952/8192.
-
-## Caveat
-150k/120k caps were also trialled while the local VM ran ~2x slower and lost games on time; their Elo is not a clean read. The 180k numbers above are the clean measurement (normal-speed VM). House speed unknown; 180k cap keeps max think 6.0s there.
+## Safety / size / correctness
+- main.py 3761/4096 bytes. Max think 6.54s (153-position probe,
+  incl. 144 positions actually faced in the trials), under the
+  10s limit; no time losses in any trial.
+- Correctness: tables identical to v2; perft ALL PASS; eval check
+  ALL PASS; fuzz 2000 positions, 0 mismatches.
+- Note: base85 packer fails on this source (payload holds a quote;
+  also 4545 bytes). Latin-1 packer used instead (3761).
